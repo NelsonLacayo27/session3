@@ -14,17 +14,17 @@ import androidx.compose.ui.window.application
 @Composable
 @Preview
 fun App() {
-    // Estados principales
-    var input by remember { mutableStateOf("") }
-    var errorMsg by remember { mutableStateOf("") }
-    var tabla by remember { mutableStateOf<List<String>>(emptyList()) }
+    // === ESTADOS PRINCIPALES ===
+    var input by remember { mutableStateOf("") } // Entrada del usuario (número base)
+    var errorMsg by remember { mutableStateOf("") } // Mensaje de error a mostrar
+    var tabla by remember { mutableStateOf<List<String>>(emptyList()) } // Lista que contiene la tabla generada
 
-    // Estados adicionales para criterios de calificación
-    var mostrarTabla by remember { mutableStateOf(true) }
-    var seleccionMultiplicacion by remember { mutableStateOf("Tabla completa") }
-    val opciones = listOf("Tabla completa", "Solo pares", "Solo impares")
+    // === CONFIGURACIONES DE TABLA ===
+    var mostrarTabla by remember { mutableStateOf(true) } // Controla si se muestra la tabla
+    var seleccionMultiplicacion by remember { mutableStateOf("Tabla completa") } // Opción seleccionada
+    val opciones = listOf("Tabla completa", "Solo pares", "Solo impares") // Opciones disponibles
 
-    var checkConfirmacion by remember { mutableStateOf(false) }
+    var checkConfirmacion by remember { mutableStateOf(false) } // Confirmación con CheckBox
 
     MaterialTheme {
         Column(
@@ -33,9 +33,10 @@ fun App() {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
+            // === TÍTULO PRINCIPAL ===
             Text("Ejercicio 2: Tabla de Multiplicar", style = MaterialTheme.typography.h5)
 
-            // Campo de entrada numérica
+            // === CAMPO DE ENTRADA NUMÉRICA ===
             OutlinedTextField(
                 value = input,
                 onValueChange = {
@@ -48,7 +49,7 @@ fun App() {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // ComboBox (Dropdown) para tipo de tabla
+            // === SELECCIÓN DE TIPO DE TABLA (SIMULA COMBOBOX CON RADIOGROUP) ===
             Text("Selecciona el tipo de tabla:")
             opciones.forEach { opcion ->
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
@@ -60,7 +61,7 @@ fun App() {
                 }
             }
 
-            // CheckBox adicional (opcional)
+            // === CHECKBOX DE CONFIRMACIÓN ANTES DE GENERAR ===
             Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                 Checkbox(
                     checked = checkConfirmacion,
@@ -69,20 +70,24 @@ fun App() {
                 Text("Confirmar para generar tabla")
             }
 
-            // Botón para mostrar tabla
+            // === BOTÓN PARA MOSTRAR LA TABLA DE MULTIPLICAR ===
             Button(
                 onClick = {
                     val numero = input.toIntOrNull()
                     if (numero == null) {
+                        // Validación: entrada no numérica
                         errorMsg = "Por favor ingresa un número válido"
                         tabla = emptyList()
                     } else if (numero !in 1..12) {
+                        // Validación: número fuera de rango
                         errorMsg = "El número debe estar entre 1 y 12"
                         tabla = emptyList()
                     } else if (!checkConfirmacion) {
+                        // Validación: falta confirmación del usuario
                         errorMsg = "Debes confirmar antes de continuar"
                         tabla = emptyList()
                     } else {
+                        // Generar la tabla según la selección
                         errorMsg = ""
                         tabla = (1..12)
                             .filter {
@@ -100,12 +105,12 @@ fun App() {
                 Text("Mostrar tabla")
             }
 
-            // Mensaje de error
+            // === MENSAJE DE ERROR SI CORRESPONDE ===
             if (errorMsg.isNotEmpty()) {
                 Text(errorMsg, color = MaterialTheme.colors.error)
             }
 
-            // Mostrar tabla
+            // === MUESTRA LA TABLA SI EXISTE Y ESTÁ PERMITIDO ===
             if (mostrarTabla && tabla.isNotEmpty()) {
                 Divider(thickness = 1.dp)
                 Column {
@@ -118,6 +123,8 @@ fun App() {
     }
 }
 
+// === FUNCIÓN PRINCIPAL ===
+// Punto de entrada de la aplicación de escritorio
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "Tabla de Multiplicar") {
         App()
