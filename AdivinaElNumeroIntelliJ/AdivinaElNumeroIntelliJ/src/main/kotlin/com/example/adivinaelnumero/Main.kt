@@ -17,19 +17,19 @@ import kotlin.random.Random
 @Preview
 fun App() {
     // === ESTADOS PRINCIPALES ===
-    var numeroSecreto by remember { mutableStateOf(Random.nextInt(1, 11)) }
-    var input by remember { mutableStateOf("") }
-    var resultado by remember { mutableStateOf("") }
+    var numeroSecreto by remember { mutableStateOf(Random.nextInt(1, 11)) } // Número que el jugador debe adivinar
+    var input by remember { mutableStateOf("") } // Entrada del usuario
+    var resultado by remember { mutableStateOf("") } // Mensaje de resultado
 
-    // === CONFIGURACIONES ===
-    val rangos = listOf(10, 20, 50)
-    var rangoSeleccionado by remember { mutableStateOf(rangos[0]) }
-    var mostrarPista by remember { mutableStateOf(false) }
-    val temas = listOf("Claro", "Oscuro")
-    var temaSeleccionado by remember { mutableStateOf(temas[0]) }
-    var expanded by remember { mutableStateOf(false) }
+    // === CONFIGURACIONES DE JUEGO ===
+    val rangos = listOf(10, 20, 50) // Rangos disponibles para el número secreto
+    var rangoSeleccionado by remember { mutableStateOf(rangos[0]) } // Rango elegido
+    var mostrarPista by remember { mutableStateOf(false) } // Activar/desactivar pistas (alto o bajo)
+    val temas = listOf("Claro", "Oscuro") // Temas visuales disponibles
+    var temaSeleccionado by remember { mutableStateOf(temas[0]) } // Tema elegido
+    var expanded by remember { mutableStateOf(false) } // Estado del menú desplegable
 
-    // === TEMA DINÁMICO ===
+    // === TEMA VISUAL DINÁMICO ===
     val colores = if (temaSeleccionado == "Claro") lightColors() else darkColors()
 
     MaterialTheme(colors = colores) {
@@ -39,7 +39,6 @@ fun App() {
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-
             // === TÍTULO ===
             Text("🎯 Adivina el número secreto", style = MaterialTheme.typography.h5)
 
@@ -50,6 +49,7 @@ fun App() {
                     input = it
                     resultado = ""
                     val intento = it.toIntOrNull()
+                    // Validación básica del número ingresado
                     if (intento != null && (intento !in 1..10)) {
                         resultado = "⚠️ Solo puedes ingresar números del 1 al 10"
                     }
@@ -59,10 +59,11 @@ fun App() {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // === BOTÓN COMPROBAR ===
+            // === BOTÓN PARA COMPROBAR EL NÚMERO ===
             Button(
                 onClick = {
                     val intento = input.toIntOrNull()
+                    // Lógica principal de validación
                     resultado = when {
                         intento == null -> "⚠️ Ingresa un número válido"
                         intento !in 1..10 -> "⚠️ Solo puedes ingresar números del 1 al 10"
@@ -77,12 +78,12 @@ fun App() {
                 Text("✅ Comprobar")
             }
 
-            // === RESULTADO ===
+            // === MENSAJE DE RESULTADO ===
             if (resultado.isNotEmpty()) {
                 Text(resultado, fontSize = 18.sp)
             }
 
-            // === BOTÓN REINICIAR ===
+            // === BOTÓN PARA REINICIAR EL JUEGO ===
             Button(
                 onClick = {
                     numeroSecreto = Random.nextInt(1, 11)
@@ -96,10 +97,10 @@ fun App() {
 
             Divider(modifier = Modifier.padding(vertical = 8.dp))
 
-            // === CONFIGURACIONES ===
+            // === SECCIÓN DE CONFIGURACIÓN ===
             Text("⚙️ Configuración del juego", fontSize = 16.sp)
 
-            // RANGO
+            // === SELECCIÓN DE RANGO (ComboBox simulado) ===
             Text("🎚️ Rango disponible:")
             Box {
                 Button(onClick = { expanded = true }, modifier = Modifier.fillMaxWidth()) {
@@ -117,7 +118,7 @@ fun App() {
                 }
             }
 
-            // CHECKBOX DE PISTA
+            // === OPCIÓN PARA MOSTRAR PISTA (CheckBox) ===
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = mostrarPista,
@@ -127,7 +128,7 @@ fun App() {
                 Text("💡 Mostrar pista (alto o bajo)")
             }
 
-            // TEMA VISUAL
+            // === SELECCIÓN DE TEMA (RadioGroup simulado) ===
             Text("🎨 Tema visual:")
             temas.forEach { tema ->
                 Row(
@@ -152,10 +153,10 @@ fun App() {
     }
 }
 
+// === FUNCIÓN PRINCIPAL ===
+// Punto de entrada de la aplicación de escritorio
 fun main() = application {
     Window(onCloseRequest = ::exitApplication, title = "🎯 Adivina el número") {
         App()
     }
-}
-
 }
